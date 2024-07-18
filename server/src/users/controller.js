@@ -1,5 +1,7 @@
 const pool = require('../../db')
 const queries = require('./queries')
+const bcrypt = require('bcryptjs');
+
 
 const getUsers = (req,res) => {
 
@@ -29,10 +31,13 @@ const addUser = ((req,res)=>{
         }
     })
 
-    pool.query(queries.addUser, [first_name, last_name, email, password, phone], (error,results)=>{
+    const hashedPassword = bcrypt.hash(password, 10);
+
+    pool.query(queries.addUser, [first_name, last_name, email, hashedPassword, phone], (error,results)=>{
         if (error) throw error;
         res.status(201).send("User created succesfully");
         console.log("Created Succesfully");
+        
     })
 })
 
